@@ -11,7 +11,9 @@ fi
 sudo pacman -Syu --noconfirm
 
 # Install git, base-devel, and curl (needed for building AUR packages)
-sudo pacman -S --needed --noconfirm base-devel git curl
+if ! pacman -Qi git curl &>/dev/null || ! pacman -Qg base-devel &>/dev/null; then
+    sudo pacman -S --needed --noconfirm base-devel git curl
+fi
 
 if ! command -v paru &> /dev/null; then
 	# Clone the paru repository from the AUR
@@ -72,7 +74,7 @@ if ! command -v stow &> /dev/null; then
 fi
 
 # Remove entires used by dotfiles
-rm -f "$HOME/.local/state/apkgs/{paru,pacman,flatpak}"
+rm -rf "$HOME/.local/state/apkgs"
 
 # Symlink dotfiles
 stow --no-folding --target="$HOME" .
