@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Update packages
+sudo pacman -Syu --noconfirm
+
+# Install git, base-devel, and curl (needed for building AUR packages)
+sudo pacman -S --needed --noconfirm base-devel git curl
+
+# Clone the paru repository from the AUR
+git clone https://aur.archlinux.org/paru.git
+
+# Change into the cloned directory
+cd paru
+
+# Build and install paru
+makepkg -si --noconfirm
+
+# Return back
+cd ..
+
+# Remove paru installation dir
+rm -rf "paru"
+
+# Clone my Arch Sync tool
+git clone git@github.com:TomBos/Arch-Package-Sync.git
+
+# Change into the cloned directory
+cd "Arch-Package-Sync" || exit
+
+
