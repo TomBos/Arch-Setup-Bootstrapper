@@ -57,7 +57,9 @@ do
 done
 
 # Prepare dotfiles repo
-git clone "https://github.com/TomBos/.dotfiles" ".dotfiles"
+if [[ ! -d "$HOME/.dotfiles" ]];then
+	git clone "https://github.com/TomBos/.dotfiles" ".dotfiles"
+fi
 
 # Change into cloned directory
 cd ".dotfiles" || exit 1
