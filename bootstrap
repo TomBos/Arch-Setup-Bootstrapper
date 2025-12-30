@@ -41,3 +41,20 @@ cd ..
 # Remove installation dir
 [[ -d "APKGS" ]] && rm -rf "APKGS"
 
+# Remove every bash file made by system
+for f in "$HOME"/.bash*; do
+  [[ -f "$f" ]] && rm -f "$f"
+done
+
+# Prepare dotfiles repo
+git clone "https://github.com/TomBos/.dotfiles" ".dotfiles"
+
+# Change into cloned directory
+cd ".dotfiles" || exit 1
+
+# Symlink dotfiles
+stow --no-folding --target="$HOME" .
+
+# Prompt for reboot
+echo "Setup finished please reboot your machine !"
+
