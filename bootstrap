@@ -79,6 +79,11 @@ rm -rf "$HOME/.local/state/apkgs"
 # Symlink dotfiles
 stow --no-folding --target="$HOME" .
 
+# Sync dotfile packages
+apkgs pacman sync
+apkgs paru sync
+apkgs flatpak sync
+
 # Prompt for reboot
 echo "Setup finished please reboot your machine !"
 
