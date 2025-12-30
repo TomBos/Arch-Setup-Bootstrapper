@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ "$EUID" == "0" ]];then
+	echo "Do not run this as root !"
+	echo "Paru requires unprivileged user"
+	exit 1
+fi
+
 # Update packages
 sudo pacman -Syu --noconfirm
 
@@ -23,17 +29,13 @@ cd ..
 [[ -d "paru" ]] && rm -rf "paru"
 
 # Clone my Arch Sync tool
-git clone "git@github.com:TomBos/Arch-Package-Sync.git" "APKGS"
+git clone "https://github.com/TomBos/Arch-Package-Sync.git" "APKGS"
 
 # Change into the cloned directory
 cd "APKGS" || exit 1
 
-# Enable paru and flatpak in my installer
-sed -i 's/^# \(USE_PARU=.*\)/\1/' installer
-sed -i 's/^# \(USE_FLATPAK=.*\)/\1/' installer
-
 # Install APKGS
-bash "installer"
+USE_PARU=1 USE_FLATPAK=1 bash "installer"
 
 # Return back
 cd ..
@@ -42,7 +44,13 @@ cd ..
 [[ -d "APKGS" ]] && rm -rf "APKGS"
 
 # Remove every bash file made by system
-for f in "$HOME"/.bash*; do
+for f in \
+	"$HOME/.bash_history" \
+	"$HOME/.bash_logout" \
+	"$HOME/.bash_profile" \
+	"$HOME/.bashrc" \
+	"$HOME/.bash_login"
+do
   [[ -f "$f" ]] && rm -f "$f"
 done
 
