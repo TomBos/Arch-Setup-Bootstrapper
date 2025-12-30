@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # Update packages
 sudo pacman -Syu --noconfirm
@@ -7,10 +8,10 @@ sudo pacman -Syu --noconfirm
 sudo pacman -S --needed --noconfirm base-devel git curl
 
 # Clone the paru repository from the AUR
-git clone https://aur.archlinux.org/paru.git
+git clone "https://aur.archlinux.org/paru.git" "paru"
 
 # Change into the cloned directory
-cd paru
+cd "paru" || exit 1
 
 # Build and install paru
 makepkg -si --noconfirm
@@ -19,12 +20,24 @@ makepkg -si --noconfirm
 cd ..
 
 # Remove paru installation dir
-rm -rf "paru"
+[[ -d "paru" ]] && rm -rf "paru"
 
 # Clone my Arch Sync tool
-git clone git@github.com:TomBos/Arch-Package-Sync.git
+git clone "git@github.com:TomBos/Arch-Package-Sync.git" "APKGS"
 
 # Change into the cloned directory
-cd "Arch-Package-Sync" || exit
+cd "APKGS" || exit 1
 
+# Enable paru and flatpak in my installer
+sed -i 's/^# \(USE_PARU=.*\)/\1/' installer
+sed -i 's/^# \(USE_FLATPAK=.*\)/\1/' installer
+
+# Install APKGS
+bash "installer"
+
+# Return back
+cd ..
+
+# Remove installation dir
+[[ -d "APKGS" ]] && rm -rf "APKGS"
 
